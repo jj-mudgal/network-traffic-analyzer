@@ -1,0 +1,5 @@
+Flask
+scapy
+pytest
+playwright
+python-dotenv
