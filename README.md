@@ -61,12 +61,11 @@ Capture → Analyze → Store → Display → Filter/Visualize → Detect Basic 
 
 | Name | Role | Focus Area |
 |---|---|---|
-| _TBD (Member 1)_ | Backend & Packet Capture | Python, Scapy, packet capture/parsing, TCP/UDP/ICMP handling |
-| _TBD (Member 2)_ | Frontend & Dashboard | HTML/CSS/JS, Chart.js, packet table, filters |
-| _TBD (Member 3)_ | Database & Security | SQLite schema/queries, port scan & abnormal traffic detection |
-| _TBD (Member 4)_ | Testing & QA | Pytest, Playwright, regression & performance testing |
-| _TBD (Member 5)_ | Integration & Documentation | Flask integration, GitHub workflow, README, docs, release prep |
-
+| Aradhya Sharma | Backend & Packet Capture | Python, Scapy, packet capture/parsing, TCP/UDP/ICMP handling |
+| Chandramolee | Frontend | HTML/CSS/JS, Chart.js, dashboard, packet table, filters |
+| Naman | Database | SQLite schema, queries, packet storage and retrieval |
+| Neelesh | Security | Port scan detection, abnormal traffic detection, security alerts |
+| Janmejai Mudgal | Testing, Integration & Documentation | Pytest, Playwright, regression testing, Flask integration, GitHub workflow, README and project documentation |
 > _Replace placeholders with real names once assigned._
 
 ## Project Structure
@@ -117,14 +116,6 @@ This README grows sprint by sprint. Sections below are **not yet written** — d
 | Final README polish | Sprint 6 |
 | Final Report | Sprint 6 |
 
-## Team Members
 
-| Name | Role |
-|---|---|
-| Aradhya Sharma | Backend & Packet Capture |
-| Chandramolee | Frontend |
-| Naman | Database |
-| Neelesh | Security |
-| Janmejai | Testing & Integration |
 
 For contributor/AI-assistant context (architecture decisions, module ownership, Git workflow, conventions), see [`context.md`](./context.md).
