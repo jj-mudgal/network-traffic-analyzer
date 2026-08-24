@@ -173,9 +173,9 @@ See [`docs/testing.md`](docs/testing.md) for details.
 | Name | Role | Focus Area |
 |---|---|---|
 | Aradhya Sharma | Backend & Packet Capture | Python, Scapy, packet capture/parsing, TCP/UDP/ICMP handling |
-| Chandramolee | Frontend | HTML/CSS/JS, Chart.js, dashboard, packet table, filters |
-| Naman | Database | SQLite schema, queries, packet storage and retrieval |
-| Neelesh | Security | Port scan detection, abnormal traffic detection, security alerts |
+| Chandramolee Mudgal | Frontend | HTML/CSS/JS, Chart.js, dashboard, packet table, filters |
+| Naman Pareek | Database | SQLite schema, queries, packet storage and retrieval |
+| Neelesh Bansal | Security | Port scan detection, abnormal traffic detection, security alerts |
 | Janmejai Mudgal | Testing, Integration & Documentation | Pytest, Playwright, regression testing, Flask integration, GitHub workflow, README and project documentation |
 
 > Replace with actual names once assigned.
