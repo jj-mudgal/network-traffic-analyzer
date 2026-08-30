@@ -1,6 +1,1 @@
-Flask
-scapy
-pytest
-playwright
-python-dotenv
-Flask>=3.0,<4.0
+Flask==3.0.3
