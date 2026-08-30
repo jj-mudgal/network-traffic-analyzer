@@ -3,3 +3,4 @@ scapy
 pytest
 playwright
 python-dotenv
+Flask>=3.0,<4.0
