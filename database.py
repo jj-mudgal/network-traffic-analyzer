@@ -1,7 +1,7 @@
 """
 database.py — SQLite access layer for the Network Traffic Analyzer.
 
-Schema follows Section 7 of context.md (packets table).
+Schema follows Section 5 of docs/Architecture.md (packets table).
 """
 
 import sqlite3
@@ -33,6 +33,23 @@ def init_db():
             tcp_flags TEXT
         )
         """
+    )
+    conn.commit()
+    conn.close()
+
+
+def insert_packet(packet_data: dict):
+    """Insert a single packet metadata record into the database."""
+    conn = get_connection()
+    conn.execute(
+        """
+        INSERT INTO packets
+            (timestamp, source_ip, destination_ip, source_port,
+             destination_port, protocol, packet_size, tcp_flags)
+        VALUES (:timestamp, :source_ip, :destination_ip, :source_port,
+                :destination_port, :protocol, :packet_size, :tcp_flags)
+        """,
+        packet_data
     )
     conn.commit()
     conn.close()
