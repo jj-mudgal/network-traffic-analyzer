@@ -1,0 +1,119 @@
+[1mdiff --git a/requirements.txt b/requirements.txt[m
+[1mindex 95fef4e..420fe72 100644[m
+[1m--- a/requirements.txt[m
+[1m+++ b/requirements.txt[m
+[36m@@ -1 +1,2 @@[m
+ Flask==3.0.3[m
+[32m+[m[32mscapy==2.7.0[m
+[1mdiff --git a/tests/test_ip_extraction.py b/tests/test_ip_extraction.py[m
+[1mindex cc38395..5e30064 100644[m
+[1m--- a/tests/test_ip_extraction.py[m
+[1m+++ b/tests/test_ip_extraction.py[m
+[36m@@ -1,13 +1,34 @@[m
+ """Unit tests for source/destination IP extraction from packets."""[m
+[31m-import pytest[m
+[31m-# from backend.parser import extract_source_ip, extract_destination_ip[m
+[32m+[m
+[32m+[m[32mfrom scapy.all import IP, TCP[m
+[32m+[m
+[32m+[m[32mfrom backend.parser import ([m
+[32m+[m[32m    extract_source_ip,[m
+[32m+[m[32m    extract_destination_ip,[m
+[32m+[m[32m    parse_packet,[m
+[32m+[m[32m)[m
+[32m+[m
+ [m
+ def test_extract_source_ip_valid_packet():[m
+[31m-    # TODO: build a mock/sample packet and assert extracted IP matches[m
+[31m-    pass[m
+[32m+[m[32m    packet = IP(src="192.168.1.10", dst="8.8.8.8") / TCP()[m
+[32m+[m[32m    assert extract_source_ip(packet) == "192.168.1.10"[m
+[32m+[m
+ [m
+ def test_extract_destination_ip_valid_packet():[m
+[31m-    pass[m
+[32m+[m[32m    packet = IP(src="192.168.1.10", dst="8.8.8.8") / TCP()[m
+[32m+[m[32m    assert extract_destination_ip(packet) == "8.8.8.8"[m
+[32m+[m
+ [m
+ def test_extract_ip_malformed_packet_raises_or_returns_none():[m
+[31m-    pass[m
+[32m+[m[32m    packet = TCP()[m
+[32m+[m[32m    assert extract_source_ip(packet) is None[m
+[32m+[m[32m    assert extract_destination_ip(packet) is None[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef test_parsed_packet_can_be_passed_to_database_module():[m
+[32m+[m[32m    packet = IP(src="192.168.1.10", dst="8.8.8.8") / TCP()[m
+[32m+[m[32m    data = parse_packet(packet)[m
+[32m+[m
+[32m+[m[32m    assert data["source_ip"] == "192.168.1.10"[m
+[32m+[m[32m    assert data["destination_ip"] == "8.8.8.8"[m
+[32m+[m[32m    assert "timestamp" in data[m
+\ No newline at end of file[m
+[1mdiff --git a/tests/test_packet_capture.py b/tests/test_packet_capture.py[m
+[1mindex 233cee8..b21a009 100644[m
+[1m--- a/tests/test_packet_capture.py[m
+[1m+++ b/tests/test_packet_capture.py[m
+[36m@@ -1,9 +1,26 @@[m
+ """Unit tests for basic packet capture functionality."""[m
+[32m+[m
+ import pytest[m
+[31m-# from backend.capture import capture_packets[m
+ [m
+[31m-def test_capture_returns_packet_objects():[m
+[31m-    pass[m
+[32m+[m[32mfrom backend.capture import capture_packets[m
+[32m+[m
+ [m
+ def test_capture_handles_no_interface_gracefully():[m
+[31m-    pass[m
+[32m+[m[32m    with pytest.raises(ValueError):[m
+[32m+[m[32m        capture_packets(None)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef test_capture_returns_packet_objects(monkeypatch):[m
+[32m+[m[32m    from scapy.layers.inet import IP[m
+[32m+[m
+[32m+[m[32m    sample_packet = IP(src="192.168.1.10", dst="8.8.8.8")[m
+[32m+[m
+[32m+[m[32m    monkeypatch.setattr([m
+[32m+[m[32m        "backend.capture.sniff",[m
+[32m+[m[32m        lambda **kwargs: [sample_packet],[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    packets = capture_packets("test-interface", count=1)[m
+[32m+[m
+[32m+[m[32m    assert len(packets) == 1[m
+[32m+[m[32m    assert packets[0].haslayer(IP)[m
+\ No newline at end of file[m
+[1mdiff --git a/tests/test_timestamp_extraction.py b/tests/test_timestamp_extraction.py[m
+[1mindex 987735e..e452dbf 100644[m
+[1m--- a/tests/test_timestamp_extraction.py[m
+[1m+++ b/tests/test_timestamp_extraction.py[m
+[36m@@ -1,9 +1,20 @@[m
+ """Unit tests for packet timestamp extraction."""[m
+[31m-import pytest[m
+[31m-# from backend.parser import extract_timestamp[m
+[32m+[m
+[32m+[m[32mfrom scapy.all import IP[m
+[32m+[m
+[32m+[m[32mfrom backend.parser import extract_timestamp[m
+[32m+[m
+ [m
+ def test_extract_timestamp_returns_valid_format():[m
+[31m-    pass[m
+[32m+[m[32m    packet = IP(src="192.168.1.10", dst="8.8.8.8")[m
+[32m+[m[32m    timestamp = extract_timestamp(packet)[m
+[32m+[m
+[32m+[m[32m    assert timestamp is not None[m
+[32m+[m[32m    assert isinstance(timestamp, float)[m
+[32m+[m
+ [m
+ def test_extract_timestamp_missing_field():[m
+[31m-    pass[m
+[32m+[m[32m    packet = IP(src="192.168.1.10", dst="8.8.8.8")[m
+[32m+[m[32m    del packet.time[m
+[32m+[m
+[32m+[m[32m    assert extract_timestamp(packet) is None[m
+\ No newline at end of file[m
