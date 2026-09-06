@@ -80,3 +80,17 @@ def test_get_all_packets_returns_expected_rows(test_db):
     # Newest should be first because get_all_packets orders by id DESC
     assert packets[0]["protocol"] == "UDP"
     assert packets[1]["protocol"] == "TCP"
+
+def test_insert_tcp_packet_stores_flags_and_ports():
+    # TODO: insert a parsed TCP record, assert row includes ports + tcp_flags
+    pass
+
+def test_insert_udp_packet_stores_ports_no_flags():
+    pass
+
+def test_insert_icmp_packet_stores_without_ports_or_flags():
+    pass
+
+def test_get_all_packets_returns_mixed_protocol_rows():
+    # insert one of each protocol type, assert retrieval returns all 3 correctly
+    pass
