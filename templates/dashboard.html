@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Traffic Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Network Traffic Analyzer</h1>
+    <span class="subtitle">Student Computer Networks Project — educational use only</span>
+  </header>
+
+  <main class="container">
+
+    <section class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <span class="stat-label">Total Packets</span>
+        <span class="stat-value" id="stat-total">–</span>
+      </div>
+      <div class="stat-card protocol-tcp">
+        <span class="stat-label">TCP</span>
+        <span class="stat-value" id="stat-tcp">–</span>
+      </div>
+      <div class="stat-card protocol-udp">
+        <span class="stat-label">UDP</span>
+        <span class="stat-value" id="stat-udp">–</span>
+      </div>
+      <div class="stat-card protocol-icmp">
+        <span class="stat-label">ICMP</span>
+        <span class="stat-value" id="stat-icmp">–</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Captured Packets</h2>
+        <span class="hint">Auto-refreshes every 5s</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="packet-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Timestamp</th>
+              <th>Source IP</th>
+              <th>Destination IP</th>
+              <th>Src Port</th>
+              <th>Dst Port</th>
+              <th>Protocol</th>
+              <th>Size (bytes)</th>
+              <th>TCP Flags</th>
+            </tr>
+          </thead>
+          <tbody id="packet-table-body">
+            <tr><td colspan="9" class="empty-row">Loading packets…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Network Traffic Analyzer
 
-A web-based Computer Networks project inspired by the basic functionality of Wireshark. It captures network packets from an authorized network interface, extracts useful packet metadata, stores it, displays it through a web dashboard, and provides basic traffic analysis and security alerts.
+A web-based project inspired by the basic functionality of Wireshark. It captures network packets from an authorized network interface, extracts useful packet metadata, stores it, displays it through a web dashboard, and provides basic traffic analysis and security alerts.
 
 > This project is **not** intended to replace Wireshark. It is an educational, student-built network monitoring and analysis tool with basic security detection.
 
@@ -11,6 +11,7 @@ A web-based Computer Networks project inspired by the basic functionality of Wir
 ## 1. Project Overview
 
 - **Repository:** `network-traffic-analyzer`
+- **Type:** College Computer Networks project (student team)
 - **Team size:** 5 members
 - **Duration:** 6 weeks, run as 6 one-week Agile sprints
 
@@ -100,7 +101,7 @@ network-traffic-analyzer/
 
 ```bash
 # Clone the repository
-git clone https://github.com/jj-mudgal/network-traffic-analyzer.git
+git clone https://github.com/<org>/network-traffic-analyzer.git
 cd network-traffic-analyzer
 
 # Create and activate a virtual environment
@@ -169,16 +170,15 @@ See [`docs/testing.md`](docs/testing.md) for details.
 
 ## 13. Team Members
 
-## Team Members
-
 | Name | Role | Focus Area |
 |---|---|---|
 | Aradhya Sharma | Backend & Packet Capture | Python, Scapy, packet capture/parsing, TCP/UDP/ICMP handling |
-| Chandramolee | Frontend | HTML/CSS/JS, Chart.js, dashboard, packet table, filters |
-| Naman | Database | SQLite schema, queries, packet storage and retrieval |
-| Neelesh | Security | Port scan detection, abnormal traffic detection, security alerts |
+| Chandramolee Mudgal | Frontend | HTML/CSS/JS, Chart.js, dashboard, packet table, filters |
+| Naman Pareek | Database | SQLite schema, queries, packet storage and retrieval |
+| Neelesh Bansal | Security | Port scan detection, abnormal traffic detection, security alerts |
 | Janmejai Mudgal | Testing, Integration & Documentation | Pytest, Playwright, regression testing, Flask integration, GitHub workflow, README and project documentation |
 
+> Replace with actual names once assigned.
 
 ## 14. Sprint Plan
 
@@ -204,3 +204,6 @@ Not implemented in the current 6-week timeline:
 - Improved anomaly detection
 - Role-based access control
 - More advanced traffic analytics
+EOF_README_MD
+git add README.md
+git commit -m "docs: update project readme"
