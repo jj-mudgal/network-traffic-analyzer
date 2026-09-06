@@ -1,6 +1,6 @@
 # Network Traffic Analyzer
 
-A web-based Computer Networks project inspired by the basic functionality of Wireshark. It captures network packets from an authorized network interface, extracts useful packet metadata, stores it, displays it through a web dashboard, and provides basic traffic analysis and security alerts.
+A web-based Computer Networks project inspired by the basic functionality of Wireshark. It captures network packets from an authorized network interface, extracts useful metadata, stores it, displays it through a web dashboard, and provides basic traffic analysis and security alerts.
 
 > This project is **not** intended to replace Wireshark. It is an educational, student-built network monitoring and analysis tool with basic security detection.
 
@@ -8,13 +8,11 @@ A web-based Computer Networks project inspired by the basic functionality of Wir
 
 ---
 
-## 1. Project Overview
+## Project Overview
 
-- **Repository:** `network-traffic-analyzer`
-- **Team size:** 5 members
-- **Duration:** 6 weeks, run as 6 one-week Agile sprints
+The Network Traffic Analyzer captures live network packets on an authorized interface, parses them into structured metadata, stores that metadata in a database, and presents it through a browser-based dashboard. Users can filter and search captured traffic, view basic statistics and charts, and see alerts for simple suspicious patterns such as possible port scans or abnormal traffic volume.
 
-**Main project flow:**
+**Main flow:**
 
 ```
 Capture → Analyze → Store → Display → Filter/Visualize → Detect Basic Suspicious Activity → Test
@@ -99,7 +97,6 @@ network-traffic-analyzer/
 ## 7. Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/jj-mudgal/network-traffic-analyzer.git
 cd network-traffic-analyzer
 
@@ -111,96 +108,33 @@ source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Copy `.env.example` to `.env` and fill in any required configuration (no secrets are committed to the repo).
+> _Confirm and update these steps once verified end-to-end by the team. Note any OS-specific permission requirements for packet capture (e.g. admin/root privileges or interface selection)._
 
-## 8. How to Run
+## Documentation Roadmap
 
-> Packet capture requires elevated privileges (Scapy needs raw socket access).
+This README grows sprint by sprint. Sections below are **not yet written** — do not add them early, and do not invent content ahead of implementation.
 
-```bash
-# Run the Flask app (adjust once app entrypoint is finalized)
-sudo python -m flask run
-```
-
-Then open the dashboard at `http://localhost:5000`.
-
-## 9. How the System Works
-
-```
-Network Interface
-  → Scapy Packet Capture
-  → Packet Parser
-  → Backend / Flask
-  → SQLite Database
-  → Dashboard
-```
-
-1. Scapy captures live packets on the selected interface.
-2. The parser extracts metadata (IPs, ports, protocol, size, TCP flags, timestamp).
-3. Metadata is written to the SQLite `packets` table.
-4. The Flask API serves packet and statistics data to the dashboard.
-5. The dashboard displays the packet table, filters, and charts.
-6. Security detection logic runs against stored/incoming metadata and writes to `security_alerts` when rules are triggered.
-
-## 10. Database
-
-**Engine:** SQLite. The system stores packet **metadata only** — not full packet payloads.
-
-See [`docs/architecture.md`](docs/architecture.md) for schema details.
-
-## 11. Security Features
-
-Only basic, explainable detection is in scope for this project:
-
-- **Possible Port Scan Detection** — flags a source IP that attempts connections to an unusually large number of distinct ports within a configurable time window.
-- **Abnormal Traffic Detection** — flags traffic rates exceeding a configurable threshold.
-
-Alerts use cautious wording ("Possible Port Scan", "Suspicious Traffic", "Abnormal Traffic") — an alert is never presented as a confirmed attack, since rule-based detection can produce false positives and false negatives.
-
-## 12. Testing
-
-- **Unit testing (Pytest):** packet parsing, IP extraction, protocol identification, timestamp/size extraction, database operations, security detection logic.
-- **Integration testing:** Packet Capture → Parser → Database → Flask API → Dashboard.
-- **UI testing (Playwright):** dashboard load, packet table, search, protocol filters, navigation, alerts, buttons.
-- **Regression testing:** rerun prior automated tests after changes.
-- **Performance testing:** packets/sec, response time, CPU/memory usage, packet drops, DB performance (measured only — no invented results).
-
-See [`docs/testing.md`](docs/testing.md) for details.
-
-## 13. Team Members
+| Section | Added in |
+|---|---|
+| Features | Sprints 2–4 |
+| Database Structure | Sprints 2–4 |
+| API Endpoints | Sprints 2–4 |
+| Security Features | Sprints 2–4 |
+| Testing Approach | Sprint 5 |
+| Testing Results | Sprint 5 |
+| Screenshots | Sprint 6 |
+| Limitations & Future Scope | Sprint 6 |
+| Final README polish | Sprint 6 |
+| Final Report | Sprint 6 |
 
 ## Team Members
 
-| Name | Role | Focus Area |
-|---|---|---|
-| Aradhya Sharma | Backend & Packet Capture | Python, Scapy, packet capture/parsing, TCP/UDP/ICMP handling |
-| Chandramolee | Frontend | HTML/CSS/JS, Chart.js, dashboard, packet table, filters |
-| Naman | Database | SQLite schema, queries, packet storage and retrieval |
-| Neelesh | Security | Port scan detection, abnormal traffic detection, security alerts |
-| Janmejai Mudgal | Testing, Integration & Documentation | Pytest, Playwright, regression testing, Flask integration, GitHub workflow, README and project documentation |
+| Name | Role |
+|---|---|
+| Aradhya Sharma | Backend & Packet Capture |
+| Chandramolee | Frontend |
+| Naman | Database |
+| Neelesh | Security |
+| Janmejai | Testing & Integration |
 
-
-## 14. Sprint Plan
-
-See [`docs/sprint-plan.md`](docs/sprint-plan.md) for the full 6-sprint breakdown. Current phase: **Sprint 1 — Project Setup & Basic Capture**.
-
-## 15. Limitations
-
-- Only sees traffic available to the selected capture interface.
-- Encrypted application traffic cannot simply be read/decrypted by the analyzer.
-- Basic detection rules can produce false positives and false negatives.
-- Performance can degrade under very high traffic volumes.
-- This is an educational/basic network analyzer, not a replacement for professional tools such as Wireshark.
-
-## 16. Future Scope
-
-Not implemented in the current 6-week timeline:
-
-- IPv6 support
-- More protocol analysis
-- PCAP import/export
-- Better network visualization / network topology visualization
-- More security detection rules
-- Improved anomaly detection
-- Role-based access control
-- More advanced traffic analytics
+For contributor/AI-assistant context (architecture decisions, module ownership, Git workflow, conventions), see [`context.md`](./context.md).

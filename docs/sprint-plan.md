@@ -125,4 +125,3 @@ Format: `type: short description`
 Examples: `feat: implement basic packet capture`, `feat: add tcp packet parsing`, `test: add packet parser tests`, `fix: handle malformed packets`, `perf: optimize database queries`, `docs: update project readme`, `chore: configure development environment`.
 
 Avoid vague commits ("changes", "updated", "final", "done", "stuff") and don't create artificial commits just to inflate commit count.
-EOF_DOCS_SPRINT-PLAN_MD
