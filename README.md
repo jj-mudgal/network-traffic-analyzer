@@ -177,7 +177,6 @@ See [`docs/testing.md`](docs/testing.md) for details.
 | Neelesh Bansal | Security | Port scan detection, abnormal traffic detection, security alerts |
 | Janmejai Mudgal | Testing, Integration & Documentation | Pytest, Playwright, regression testing, Flask integration, GitHub workflow, README and project documentation |
 
-> Replace with actual names once assigned.
 
 ## 14. Sprint Plan
 
