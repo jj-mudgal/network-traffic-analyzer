@@ -87,4 +87,3 @@ Both are rule-based and explicitly acknowledged as capable of false positives/ne
 ## 7. Non-Goals
 
 Explicitly out of the architecture for this project (see `requirements.md` §5 for full list): ML/DL-based detection, SDN, blockchain, complex IDS/IPS, distributed systems, Kubernetes, microservices, cloud infrastructure, advanced payload inspection.
-EOF_DOCS_ARCHITECTURE_MD

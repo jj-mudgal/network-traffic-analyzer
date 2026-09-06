@@ -1,5 +1,5 @@
-Flask==3.0.3
-scapy==2.7.0
+Flask
+scapy
 pytest
 playwright
 python-dotenv
