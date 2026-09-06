@@ -87,4 +87,3 @@ The following are explicitly **not** to be implemented unless later agreed upon 
 - Rule-based detection can produce false positives and false negatives.
 - Performance may degrade under very high traffic volumes.
 - This tool is educational and is not a replacement for Wireshark or other professional tools.
-EOF_DOCS_REQUIREMENTS_MD

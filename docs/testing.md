@@ -72,4 +72,3 @@ For Sprint 1 specifically (Project Setup & Basic Capture), initial tests should 
 - SQLite `packets` table is created with the expected schema
 
 Further protocol parsing, filtering, and security detection tests are added in later sprints as those features are implemented (see `sprint-plan.md`).
-EOF_DOCS_TESTING_MD
