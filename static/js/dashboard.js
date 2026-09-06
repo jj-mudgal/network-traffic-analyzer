@@ -1,8 +1,10 @@
 // dashboard.js
 // Fetches packet metadata and protocol stats from the Flask API
 // and renders them into the dashboard table / stat cards.
+// No frameworks — keeps things simple per the project's tech stack (Section 4).
 
 const REFRESH_INTERVAL_MS = 5000;
+let isRefreshing = false;
 
 async function loadStats() {
   try {
@@ -46,10 +48,15 @@ function rowHtml(packet) {
       <td>${packet.source_port ?? "–"}</td>
       <td>${packet.destination_port ?? "–"}</td>
       <td><span class="protocol-badge ${protocol}">${protocol}</span></td>
-      <td>${packet.packet_size ?? "–"}</td>
+      <td>${formatSize(packet.packet_size)}</td>
       <td>${escapeHtml(packet.tcp_flags ?? "–")}</td>
     </tr>
   `;
+}
+
+function formatSize(bytes) {
+  if (bytes === null || bytes === undefined) return "–";
+  return Number(bytes).toLocaleString();
 }
 
 function escapeHtml(value) {
@@ -60,9 +67,14 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;");
 }
 
-function refreshAll() {
-  loadStats();
-  loadPackets();
+async function refreshAll() {
+  if (isRefreshing) return;
+  isRefreshing = true;
+  try {
+    await Promise.all([loadStats(), loadPackets()]);
+  } finally {
+    isRefreshing = false;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
