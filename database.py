@@ -65,6 +65,54 @@ def get_all_packets(limit=200):
     return [dict(row) for row in rows]
 
 
+def get_filtered_packets(limit=200, protocol=None, source_ip=None, destination_ip=None, source_port=None, destination_port=None):
+    """Retrieve packets matching the optional filter criteria."""
+    query = "SELECT * FROM packets WHERE 1=1"
+    params = {}
+
+    if protocol:
+        query += " AND protocol = :protocol"
+        params['protocol'] = protocol
+    if source_ip:
+        query += " AND source_ip = :source_ip"
+        params['source_ip'] = source_ip
+    if destination_ip:
+        query += " AND destination_ip = :destination_ip"
+        params['destination_ip'] = destination_ip
+    if source_port is not None:
+        query += " AND source_port = :source_port"
+        params['source_port'] = source_port
+    if destination_port is not None:
+        query += " AND destination_port = :destination_port"
+        params['destination_port'] = destination_port
+
+    query += " ORDER BY id DESC LIMIT :limit"
+    params['limit'] = limit
+
+    conn = get_connection()
+    rows = conn.execute(query, params).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
+def get_statistics():
+    """Return total counts and protocol breakdowns."""
+    conn = get_connection()
+    total = conn.execute("SELECT COUNT(*) FROM packets").fetchone()[0]
+    
+    rows = conn.execute("SELECT protocol, COUNT(*) as count FROM packets GROUP BY protocol").fetchall()
+    conn.close()
+    
+    stats = {
+        "total": total,
+        "protocols": {}
+    }
+    for row in rows:
+        stats["protocols"][row["protocol"]] = row["count"]
+        
+    return stats
+
+
 def seed_sample_data():
     """
     Insert a handful of sample rows ONLY if the table is empty.
