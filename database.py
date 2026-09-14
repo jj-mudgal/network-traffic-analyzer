@@ -48,6 +48,57 @@ def get_all_packets(limit=200):
     return [dict(row) for row in rows]
 
 
+def get_filtered_packets(
+    protocol=None,
+    source_ip=None,
+    destination_ip=None,
+    source_port=None,
+    destination_port=None,
+    limit=200,
+):
+    """
+    Return packets matching the given filters, newest first.
+
+    All filters are optional and combine with AND. IP fields match by
+    substring (so "192.168.1" matches any IP containing that string);
+    protocol and ports match exactly. Every value is passed as a bound
+    parameter (never string-formatted into the SQL) to avoid SQL injection.
+    """
+    conditions = []
+    params = []
+
+    if protocol:
+        conditions.append("UPPER(protocol) = ?")
+        params.append(protocol.upper())
+
+    if source_ip:
+        conditions.append("source_ip LIKE ?")
+        params.append(f"%{source_ip}%")
+
+    if destination_ip:
+        conditions.append("destination_ip LIKE ?")
+        params.append(f"%{destination_ip}%")
+
+    if source_port:
+        conditions.append("source_port = ?")
+        params.append(source_port)
+
+    if destination_port:
+        conditions.append("destination_port = ?")
+        params.append(destination_port)
+
+    query = "SELECT * FROM packets"
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+    query += " ORDER BY id DESC LIMIT ?"
+    params.append(limit)
+
+    conn = get_connection()
+    rows = conn.execute(query, params).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
 def seed_sample_data():
     """
     Insert a handful of sample rows ONLY if the table is empty.

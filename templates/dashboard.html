@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Network Traffic Analyzer</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -30,6 +31,51 @@
       <div class="stat-card protocol-icmp">
         <span class="stat-label">ICMP</span>
         <span class="stat-value" id="stat-icmp">–</span>
+      </div>
+    </section>
+
+    <section class="panel filters-panel">
+      <div class="panel-header">
+        <h2>Filters</h2>
+        <button id="clear-filters" class="btn-clear" type="button">Clear filters</button>
+      </div>
+
+      <div class="filters-body">
+        <div class="filter-group" role="group" aria-label="Filter by protocol">
+          <button class="protocol-filter-btn active" data-protocol="">All</button>
+          <button class="protocol-filter-btn" data-protocol="TCP">TCP</button>
+          <button class="protocol-filter-btn" data-protocol="UDP">UDP</button>
+          <button class="protocol-filter-btn" data-protocol="ICMP">ICMP</button>
+        </div>
+
+        <div class="filter-inputs">
+          <label>
+            Source IP
+            <input type="text" id="filter-source-ip" placeholder="e.g. 192.168.1.10" />
+          </label>
+          <label>
+            Destination IP
+            <input type="text" id="filter-destination-ip" placeholder="e.g. 8.8.8.8" />
+          </label>
+          <label>
+            Source Port
+            <input type="number" id="filter-source-port" placeholder="e.g. 443" min="0" max="65535" />
+          </label>
+          <label>
+            Destination Port
+            <input type="number" id="filter-destination-port" placeholder="e.g. 443" min="0" max="65535" />
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel chart-panel">
+      <div class="panel-header">
+        <h2>Traffic Statistics</h2>
+        <span class="hint">Reflects current filters</span>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="protocol-chart"></canvas>
       </div>
     </section>
 
