@@ -65,193 +65,56 @@ def get_all_packets(limit=200):
     return [dict(row) for row in rows]
 
 
-def get_filtered_packets(limit=200, protocol=None, source_ip=None, destination_ip=None, source_port=None, destination_port=None):
-    """Retrieve packets matching the optional filter criteria."""
-    query = "SELECT * FROM packets WHERE 1=1"
-    params = {}
+def get_filtered_packets(
+    protocol=None,
+    source_ip=None,
+    destination_ip=None,
+    source_port=None,
+    destination_port=None,
+    limit=200,
+):
+    """
+    Return packets matching the given filters, newest first.
+
+    All filters are optional and combine with AND. IP fields match by
+    substring (so "192.168.1" matches any IP containing that string);
+    protocol and ports match exactly. Every value is passed as a bound
+    parameter (never string-formatted into the SQL) to avoid SQL injection.
+    """
+    conditions = []
+    params = []
 
     if protocol:
-        query += " AND protocol = :protocol"
-        params['protocol'] = protocol
-    if source_ip:
-        query += " AND source_ip = :source_ip"
-        params['source_ip'] = source_ip
-    if destination_ip:
-        query += " AND destination_ip = :destination_ip"
-        params['destination_ip'] = destination_ip
-    if source_port is not None:
-        query += " AND source_port = :source_port"
-        params['source_port'] = source_port
-    if destination_port is not None:
-        query += " AND destination_port = :destination_port"
-        params['destination_port'] = destination_port
+        conditions.append("UPPER(protocol) = ?")
+        params.append(protocol.upper())
 
-    query += " ORDER BY id DESC LIMIT :limit"
-    params['limit'] = limit
+    if source_ip:
+        conditions.append("source_ip LIKE ?")
+        params.append(f"%{source_ip}%")
+
+    if destination_ip:
+        conditions.append("destination_ip LIKE ?")
+        params.append(f"%{destination_ip}%")
+
+    if source_port:
+        conditions.append("source_port = ?")
+        params.append(source_port)
+
+    if destination_port:
+        conditions.append("destination_port = ?")
+        params.append(destination_port)
+
+    query = "SELECT * FROM packets"
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+    query += " ORDER BY id DESC LIMIT ?"
+    params.append(limit)
 
     conn = get_connection()
     rows = conn.execute(query, params).fetchall()
     conn.close()
     return [dict(row) for row in rows]
 
-
-def get_statistics():
-    """Return aggregate traffic statistics from stored packet metadata."""
-    conn = get_connection()
-
-    total = conn.execute(
-        "SELECT COUNT(*) FROM packets"
-    ).fetchone()[0]
-
-    total_bytes = conn.execute(
-        "SELECT COALESCE(SUM(packet_size), 0) FROM packets"
-    ).fetchone()[0]
-
-    average_packet_size = conn.execute(
-        "SELECT COALESCE(AVG(packet_size), 0) FROM packets"
-    ).fetchone()[0]
-
-    protocol_rows = conn.execute(
-        """
-        SELECT protocol, COUNT(*) AS count
-        FROM packets
-        GROUP BY protocol
-        ORDER BY count DESC
-        """
-    ).fetchall()
-
-    protocol_byte_rows = conn.execute(
-        """
-        SELECT protocol, COALESCE(SUM(packet_size), 0) AS bytes
-        FROM packets
-        GROUP BY protocol
-        ORDER BY bytes DESC
-        """
-    ).fetchall()
-
-    source_port_rows = conn.execute(
-        """
-        SELECT source_port, COUNT(*) AS count
-        FROM packets
-        WHERE source_port IS NOT NULL
-        GROUP BY source_port
-        ORDER BY count DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    destination_port_rows = conn.execute(
-        """
-        SELECT destination_port, COUNT(*) AS count
-        FROM packets
-        WHERE destination_port IS NOT NULL
-        GROUP BY destination_port
-        ORDER BY count DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    source_ip_rows = conn.execute(
-        """
-        SELECT source_ip, COUNT(*) AS count
-        FROM packets
-        GROUP BY source_ip
-        ORDER BY count DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    destination_ip_rows = conn.execute(
-        """
-        SELECT destination_ip, COUNT(*) AS count
-        FROM packets
-        GROUP BY destination_ip
-        ORDER BY count DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    traffic_pair_rows = conn.execute(
-        """
-        SELECT source_ip, destination_ip, COUNT(*) AS packets,
-               COALESCE(SUM(packet_size), 0) AS bytes
-        FROM packets
-        GROUP BY source_ip, destination_ip
-        ORDER BY packets DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    port_activity_rows = conn.execute(
-        """
-        SELECT source_ip, COUNT(DISTINCT destination_port) AS unique_destination_ports
-        FROM packets
-        WHERE destination_port IS NOT NULL
-        GROUP BY source_ip
-        ORDER BY unique_destination_ports DESC
-        LIMIT 10
-        """
-    ).fetchall()
-
-    conn.close()
-
-    return {
-        "total": total,
-        "total_bytes": total_bytes,
-        "average_packet_size": round(average_packet_size, 2),
-        "protocols": {
-            row["protocol"]: row["count"]
-            for row in protocol_rows
-        },
-        "protocol_bytes": {
-            row["protocol"]: row["bytes"]
-            for row in protocol_byte_rows
-        },
-        "source_ports": [
-            {
-                "port": row["source_port"],
-                "count": row["count"],
-            }
-            for row in source_port_rows
-        ],
-        "destination_ports": [
-            {
-                "port": row["destination_port"],
-                "count": row["count"],
-            }
-            for row in destination_port_rows
-        ],
-        "top_source_ips": [
-            {
-                "ip": row["source_ip"],
-                "count": row["count"],
-            }
-            for row in source_ip_rows
-        ],
-        "top_destination_ips": [
-            {
-                "ip": row["destination_ip"],
-                "count": row["count"],
-            }
-            for row in destination_ip_rows
-        ],
-        "traffic_pairs": [
-            {
-                "source_ip": row["source_ip"],
-                "destination_ip": row["destination_ip"],
-                "packets": row["packets"],
-                "bytes": row["bytes"],
-            }
-            for row in traffic_pair_rows
-        ],
-        "port_activity": [
-            {
-                "source_ip": row["source_ip"],
-                "unique_destination_ports": row["unique_destination_ports"],
-            }
-            for row in port_activity_rows
-        ],
-    }
 
 def seed_sample_data():
     """
