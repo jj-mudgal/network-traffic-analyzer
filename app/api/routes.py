@@ -123,7 +123,7 @@ def get_packets():
 
 @api.get("/stats")
 def get_stats():
-    """Return packet statistics."""
+    """Return aggregate traffic statistics for security analysis."""
     database.init_db()
 
     statistics = database.get_statistics()
@@ -131,9 +131,19 @@ def get_stats():
 
     return jsonify({
         "total_packets": statistics.get("total", 0),
+        "total_bytes": statistics.get("total_bytes", 0),
+        "average_packet_size": statistics.get("average_packet_size", 0),
+        "protocols": protocols,
+        "protocol_bytes": statistics.get("protocol_bytes", {}),
         "tcp": protocols.get("TCP", 0),
         "udp": protocols.get("UDP", 0),
         "icmp": protocols.get("ICMP", 0),
+        "source_ports": statistics.get("source_ports", []),
+        "destination_ports": statistics.get("destination_ports", []),
+        "top_source_ips": statistics.get("top_source_ips", []),
+        "top_destination_ips": statistics.get("top_destination_ips", []),
+        "traffic_pairs": statistics.get("traffic_pairs", []),
+        "port_activity": statistics.get("port_activity", []),
     })
 
 
