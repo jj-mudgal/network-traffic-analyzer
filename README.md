@@ -4,14 +4,13 @@ A web-based project inspired by the basic functionality of Wireshark. It capture
 
 > This project is **not** intended to replace Wireshark. It is an educational, student-built network monitoring and analysis tool with basic security detection.
 
-**Status:** Sprint 1 of 6 — Project Setup & Basic Capture (in progress)
+**Status:** Sprint 2 of 6 — Packet Analysis & Storage (complete)
 
 ---
 
 ## 1. Project Overview
 
 - **Repository:** `network-traffic-analyzer`
-- **Type:** College Computer Networks project (student team)
 - **Team size:** 5 members
 - **Duration:** 6 weeks, run as 6 one-week Agile sprints
 
@@ -178,7 +177,6 @@ See [`docs/testing.md`](docs/testing.md) for details.
 | Neelesh Bansal | Security | Port scan detection, abnormal traffic detection, security alerts |
 | Janmejai Mudgal | Testing, Integration & Documentation | Pytest, Playwright, regression testing, Flask integration, GitHub workflow, README and project documentation |
 
-> Replace with actual names once assigned.
 
 ## 14. Sprint Plan
 

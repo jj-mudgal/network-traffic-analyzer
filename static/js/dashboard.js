@@ -3,7 +3,6 @@
 // and renders them into the dashboard table / stat cards.
 
 const REFRESH_INTERVAL_MS = 5000;
-let isRefreshing = false;
 
 // Current filter state. Kept in one place so building the query string
 // for both /api/packets and /api/stats always stays in sync.
@@ -113,15 +112,10 @@ function rowHtml(packet) {
       <td>${packet.source_port ?? "–"}</td>
       <td>${packet.destination_port ?? "–"}</td>
       <td><span class="protocol-badge ${protocol}">${protocol}</span></td>
-      <td>${formatSize(packet.packet_size)}</td>
+      <td>${packet.packet_size ?? "–"}</td>
       <td>${escapeHtml(packet.tcp_flags ?? "–")}</td>
     </tr>
   `;
-}
-
-function formatSize(bytes) {
-  if (bytes === null || bytes === undefined) return "–";
-  return Number(bytes).toLocaleString();
 }
 
 function escapeHtml(value) {
@@ -132,14 +126,9 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;");
 }
 
-async function refreshAll() {
-  if (isRefreshing) return;
-  isRefreshing = true;
-  try {
-    await Promise.all([loadStats(), loadPackets()]);
-  } finally {
-    isRefreshing = false;
-  }
+function refreshAll() {
+  loadStats();
+  loadPackets();
 }
 
 function debounce(fn, delayMs) {
