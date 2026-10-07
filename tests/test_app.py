@@ -1,93 +1,43 @@
-from app.app import create_app
-def test_index():
-    app = create_app()
-    client = app.test_client()
+"""Smoke tests for the Flask app (empty database)."""
 
+
+def test_dashboard_is_served(client):
     response = client.get("/")
-
     assert response.status_code == 200
-
-    data = response.get_json()
-
-    assert data["name"] == "Network Traffic Analyzer"
-    assert data["status"] == "running"
+    assert b"Network Traffic Analyzer" in response.data
 
 
-def test_health():
-    app = create_app()
-    client = app.test_client()
-
+def test_health(client):
     response = client.get("/api/health")
-
     assert response.status_code == 200
-
     data = response.get_json()
-
     assert data["status"] == "healthy"
     assert data["service"] == "network-traffic-analyzer-api"
 
 
-def test_packets_endpoint():
-    app = create_app()
-    client = app.test_client()
-
-    response = client.get("/api/packets")
-
-    assert response.status_code == 200
-
-    data = response.get_json()
-
+def test_packets_endpoint_empty(client):
+    data = client.get("/api/packets").get_json()
     assert data["packets"] == []
     assert data["count"] == 0
 
 
-def test_stats_endpoint():
-    app = create_app()
-    client = app.test_client()
-
-    response = client.get("/api/stats")
-
-    assert response.status_code == 200
-
-    data = response.get_json()
-
+def test_stats_endpoint_empty(client):
+    data = client.get("/api/stats").get_json()
     assert data["total_packets"] == 0
-    assert data["tcp"] == 0
-    assert data["udp"] == 0
-    assert data["icmp"] == 0
+    assert data["tcp"] == data["udp"] == data["icmp"] == data["other"] == 0
 
 
-def test_alerts_endpoint():
-    app = create_app()
-    client = app.test_client()
+def test_stats_endpoint_includes_analysis_fields(client):
+    data = client.get("/api/stats").get_json()
+    for key in (
+        "total_packets", "total_bytes", "average_packet_size", "protocols",
+        "protocol_bytes", "source_ports", "destination_ports", "top_source_ips",
+        "top_destination_ips", "traffic_pairs", "port_activity",
+    ):
+        assert key in data
 
-    response = client.get("/api/alerts")
 
-    assert response.status_code == 200
-
-    data = response.get_json()
-
+def test_alerts_endpoint_empty(client):
+    data = client.get("/api/alerts").get_json()
     assert data["alerts"] == []
     assert data["count"] == 0
-
-    def test_stats_endpoint_includes_analysis_fields():
-        app = create_app()
-    client = app.test_client()
-
-    response = client.get("/api/stats")
-
-    assert response.status_code == 200
-
-    data = response.get_json()
-
-    assert "total_packets" in data
-    assert "total_bytes" in data
-    assert "average_packet_size" in data
-    assert "protocols" in data
-    assert "protocol_bytes" in data
-    assert "source_ports" in data
-    assert "destination_ports" in data
-    assert "top_source_ips" in data
-    assert "top_destination_ips" in data
-    assert "traffic_pairs" in data
-    assert "port_activity" in data
