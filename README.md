@@ -202,6 +202,3 @@ Not implemented in the current 6-week timeline:
 - Improved anomaly detection
 - Role-based access control
 - More advanced traffic analytics
-EOF_README_MD
-git add README.md
-git commit -m "docs: update project readme"

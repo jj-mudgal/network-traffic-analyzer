@@ -227,3 +227,15 @@ tbody tr:hover {
 .protocol-badge.TCP { background: rgba(79,140,255,0.15); color: var(--tcp); }
 .protocol-badge.UDP { background: rgba(52,201,143,0.15); color: var(--udp); }
 .protocol-badge.ICMP { background: rgba(242,165,65,0.15); color: var(--icmp); }
+
+.filter-error {
+  margin: 12px 20px 0;
+  padding: 8px 12px;
+  border: 1px solid #c0392b;
+  background: rgba(192, 57, 43, 0.12);
+  color: #ff8a80;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.filter-error[hidden] { display: none; }

@@ -1,31 +1,27 @@
-import os
+"""Flask application factory for the Network Traffic Analyzer."""
 
-from flask import Flask, jsonify
+from pathlib import Path
 
-from app.api.routes import api
+from flask import Flask, render_template
+
+import database
+from app.api import register_blueprints
+
+ROOT = Path(__file__).resolve().parent.parent
+
 
 def create_app():
     """Create and configure the Flask application."""
-    app = Flask(__name__)
-
-    app.register_blueprint(api)
+    app = Flask(
+        __name__,
+        template_folder=str(ROOT / "templates"),
+        static_folder=str(ROOT / "static"),
+    )
+    database.init_db()
+    register_blueprints(app)
 
     @app.get("/")
-    def index():
-        return jsonify(
-            {
-                "name": "Network Traffic Analyzer",
-                "status": "running",
-                "message": "Flask backend is running",
-            }
-        )
+    def dashboard():
+        return render_template("dashboard.html")
 
     return app
-
-
-app = create_app()
-
-
-if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
