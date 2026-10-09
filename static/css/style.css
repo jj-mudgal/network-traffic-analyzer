@@ -240,14 +240,3 @@ tbody tr:hover {
 
 .filter-error[hidden] { display: none; }
 
-.filter-error {
-  margin: 12px 20px 0;
-  padding: 8px 12px;
-  border: 1px solid #c0392b;
-  background: rgba(192, 57, 43, 0.12);
-  color: #ff8a80;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.filter-error[hidden] { display: none; }

@@ -4,7 +4,7 @@ A web-based project inspired by the basic functionality of Wireshark. It capture
 
 > This project is **not** intended to replace Wireshark. It is an educational, student-built network monitoring and analysis tool with basic security detection.
 
-**Status:** Sprint 2 of 6 — Packet Analysis & Storage (complete)
+**Status:** Sprint 6 of 6 — Finalization (complete)
 
 ---
 
@@ -69,32 +69,15 @@ See [`docs/requirements.md`](docs/requirements.md) for functional and non-functi
 
 ## 6. Project Structure
 
-> Exact filenames are finalized as the team implements them — this is the intended Sprint 1 structure.
-
-```
-network-traffic-analyzer/
-├── app/
-│   ├── __init__.py
-│   ├── capture/          # Scapy packet capture + parsing
-│   ├── models/           # Database models / schema
-│   ├── api/              # Flask routes / API endpoints
-│   └── security/         # Detection rules (port scan, abnormal traffic)
-├── static/               # CSS, JS, Chart.js dashboard assets
-├── templates/             # HTML templates (dashboard)
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── ui/                # Playwright tests
-├── docs/
-│   ├── requirements.md
-│   ├── architecture.md
-│   ├── testing.md
-│   └── sprint-plan.md
-├── .env.example
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
+    network-traffic-analyzer/
+    ├── run.py             # entry point (--seed, --capture IFACE, --port)
+    ├── database.py        # SQLite access layer: packets, security_alerts, statistics
+    ├── app/               # Flask app factory + API blueprints (packets, stats, alerts, capture)
+    ├── backend/           # capture.py, parser.py, security.py (detection rules)
+    ├── static/ templates/ # dashboard (HTML/CSS/JS, Chart.js)
+    ├── tests/             # unit, integration, ui (Playwright)
+    ├── scripts/           # benchmark.py
+    └── docs/              # requirements, architecture, testing, api, performance
 
 ## 7. Installation
 
@@ -115,14 +98,15 @@ Copy `.env.example` to `.env` and fill in any required configuration (no secrets
 
 ## 8. How to Run
 
-> Packet capture requires elevated privileges (Scapy needs raw socket access).
+    python run.py --seed                           # dashboard with sample data -> http://localhost:5000
+    sudo "$(which python)" run.py --capture eth0   # live capture (needs root / raw sockets)
 
-```bash
-# Run the Flask app (adjust once app entrypoint is finalized)
-sudo python -m flask run
-```
-
-Then open the dashboard at `http://localhost:5000`.
+- `--seed` inserts sample packets only if the table is empty.
+- `--capture IFACE` starts Scapy capture in the background. You can also start/stop it from the dashboard.
+- Detection runs every 5 s in the background and writes alerts to `security_alerts`.
+- GitHub Codespaces: open the forwarded port 5000. Generate traffic with `ping -c 20 8.8.8.8`.
+- Tests: `python -m pytest -q` (UI tests need `playwright install chromium`).
+- API reference: [`docs/api.md`](docs/api.md). Performance: [`docs/performance.md`](docs/performance.md).
 
 ## 9. How the System Works
 
@@ -180,7 +164,7 @@ See [`docs/testing.md`](docs/testing.md) for details.
 
 ## 14. Sprint Plan
 
-See [`docs/sprint-plan.md`](docs/sprint-plan.md) for the full 6-sprint breakdown. Current phase: **Sprint 1 — Project Setup & Basic Capture**.
+See [`docs/sprint-plan.md`](docs/sprint-plan.md) for the full 6-sprint breakdown. Current phase: **Sprint 6 — Finalization**.
 
 ## 15. Limitations
 
