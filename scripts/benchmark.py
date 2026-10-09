@@ -59,7 +59,7 @@ def main():
         database.init_db()
 
         start = time.perf_counter()
-        database.insert_packets(make_packets(n))
+        (getattr(database, "insert_packets", None) or (lambda ps: [database.insert_packet(x) for x in ps]))(make_packets(n))
         bulk = time.perf_counter() - start
 
         single_n = min(n, 1000)

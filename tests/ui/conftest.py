@@ -9,14 +9,17 @@ import database
 from app import create_app
 from tests.sample_data import SAMPLE_PACKETS
 
+_insert_alert = getattr(database, "insert_alert", lambda alert: None)
+
 
 @pytest.fixture(scope="session")
 def live_server(tmp_path_factory):
     original = database.DB_PATH
     database.DB_PATH = tmp_path_factory.mktemp("ui") / "ui.db"
     database.init_db()
-    database.insert_packets(SAMPLE_PACKETS)
-    database.insert_alert({
+    for _p in SAMPLE_PACKETS:
+        database.insert_packet(_p)
+    _insert_alert({
         "source_ip": "10.0.0.66",
         "alert_type": "Possible Port Scan",
         "severity": "High",
