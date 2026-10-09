@@ -72,3 +72,12 @@ For Sprint 1 specifically (Project Setup & Basic Capture), initial tests should 
 - SQLite `packets` table is created with the expected schema
 
 Further protocol parsing, filtering, and security detection tests are added in later sprints as those features are implemented (see `sprint-plan.md`).
+
+## 8. Running the tests
+
+    python -m pytest -q                 # everything (UI tests skip if Chromium is missing)
+    python -m pytest -q --ignore=tests/ui
+    playwright install chromium         # once, to enable the UI tests
+    python scripts/benchmark.py         # performance numbers for docs/performance.md
+
+CI (`.github/workflows/tests.yml`) runs the full suite on every push and pull request.
