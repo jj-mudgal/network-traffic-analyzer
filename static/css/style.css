@@ -240,3 +240,22 @@ tbody tr:hover {
 
 .filter-error[hidden] { display: none; }
 
+
+/* ---- capture bar, alerts, talkers ---- */
+.capture-body { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 16px 20px; }
+.capture-body select { background: #10192b; border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 13px; min-width: 160px; }
+.btn-primary { background: var(--accent); border: 1px solid var(--accent); color: #fff; padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+.btn-primary:disabled, .btn-clear:disabled { opacity: 0.5; cursor: not-allowed; }
+.capture-message { margin: 0 20px 16px; font-size: 13px; color: var(--muted); }
+.capture-message.error { color: #ff8a80; }
+.capture-message[hidden] { display: none; }
+.status-pill { padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.status-idle { background: rgba(139, 147, 167, 0.15); color: var(--muted); }
+.status-running { background: rgba(52, 201, 143, 0.15); color: var(--udp); }
+.status-error { background: rgba(192, 57, 43, 0.18); color: #ff8a80; }
+.severity-badge { padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.severity-badge.Low { background: rgba(79, 140, 255, 0.15); color: var(--tcp); }
+.severity-badge.Medium { background: rgba(242, 165, 65, 0.15); color: var(--icmp); }
+.severity-badge.High { background: rgba(192, 57, 43, 0.2); color: #ff8a80; }
+.alerts-panel td.desc { white-space: normal; min-width: 280px; }
+.chart-wrapper.wide { max-width: 720px; }
