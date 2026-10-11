@@ -81,16 +81,119 @@ def test_get_all_packets_returns_expected_rows(test_db):
     assert packets[0]["protocol"] == "UDP"
     assert packets[1]["protocol"] == "TCP"
 
-def test_insert_tcp_packet_stores_flags_and_ports():
-    # TODO: insert a parsed TCP record, assert row includes ports + tcp_flags
-    pass
+def test_insert_tcp_packet_stores_flags_and_ports(test_db):
+    packet_data = {
+        "timestamp": "2026-08-30 12:00:00",
+        "source_ip": "192.168.1.10",
+        "destination_ip": "10.0.0.1",
+        "source_port": 54321,
+        "destination_port": 80,
+        "protocol": "TCP",
+        "packet_size": 512,
+        "tcp_flags": "SYN,ACK",
+    }
+    database.insert_packet(packet_data)
 
-def test_insert_udp_packet_stores_ports_no_flags():
-    pass
+    conn = sqlite3.connect(test_db)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM packets WHERE protocol = 'TCP'").fetchone()
+    conn.close()
 
-def test_insert_icmp_packet_stores_without_ports_or_flags():
-    pass
+    assert row is not None
+    assert row["source_port"] == 54321
+    assert row["destination_port"] == 80
+    assert row["tcp_flags"] == "SYN,ACK"
+    assert row["protocol"] == "TCP"
 
-def test_get_all_packets_returns_mixed_protocol_rows():
-    # insert one of each protocol type, assert retrieval returns all 3 correctly
-    pass
+
+def test_insert_udp_packet_stores_ports_no_flags(test_db):
+    packet_data = {
+        "timestamp": "2026-08-30 12:00:01",
+        "source_ip": "192.168.1.20",
+        "destination_ip": "8.8.8.8",
+        "source_port": 5353,
+        "destination_port": 53,
+        "protocol": "UDP",
+        "packet_size": 128,
+        "tcp_flags": None,
+    }
+    database.insert_packet(packet_data)
+
+    conn = sqlite3.connect(test_db)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM packets WHERE protocol = 'UDP'").fetchone()
+    conn.close()
+
+    assert row is not None
+    assert row["source_port"] == 5353
+    assert row["destination_port"] == 53
+    assert row["tcp_flags"] is None
+    assert row["protocol"] == "UDP"
+
+
+def test_insert_icmp_packet_stores_without_ports_or_flags(test_db):
+    packet_data = {
+        "timestamp": "2026-08-30 12:00:02",
+        "source_ip": "192.168.1.30",
+        "destination_ip": "192.168.1.1",
+        "source_port": None,
+        "destination_port": None,
+        "protocol": "ICMP",
+        "packet_size": 64,
+        "tcp_flags": None,
+    }
+    database.insert_packet(packet_data)
+
+    conn = sqlite3.connect(test_db)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM packets WHERE protocol = 'ICMP'").fetchone()
+    conn.close()
+
+    assert row is not None
+    assert row["source_port"] is None
+    assert row["destination_port"] is None
+    assert row["tcp_flags"] is None
+    assert row["protocol"] == "ICMP"
+
+
+def test_get_all_packets_returns_mixed_protocol_rows(test_db):
+    packets = [
+        {
+            "timestamp": "2026-08-30 12:00:00",
+            "source_ip": "192.168.1.10",
+            "destination_ip": "10.0.0.1",
+            "source_port": 1000,
+            "destination_port": 80,
+            "protocol": "TCP",
+            "packet_size": 200,
+            "tcp_flags": "ACK",
+        },
+        {
+            "timestamp": "2026-08-30 12:00:01",
+            "source_ip": "192.168.1.20",
+            "destination_ip": "8.8.8.8",
+            "source_port": 2000,
+            "destination_port": 53,
+            "protocol": "UDP",
+            "packet_size": 100,
+            "tcp_flags": None,
+        },
+        {
+            "timestamp": "2026-08-30 12:00:02",
+            "source_ip": "192.168.1.30",
+            "destination_ip": "192.168.1.1",
+            "source_port": None,
+            "destination_port": None,
+            "protocol": "ICMP",
+            "packet_size": 50,
+            "tcp_flags": None,
+        },
+    ]
+    for p in packets:
+        database.insert_packet(p)
+
+    retrieved = database.get_all_packets(limit=10)
+    assert len(retrieved) == 3
+    protocols = {r["protocol"] for r in retrieved}
+    assert protocols == {"TCP", "UDP", "ICMP"}
+
