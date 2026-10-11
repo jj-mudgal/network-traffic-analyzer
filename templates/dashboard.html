@@ -34,6 +34,37 @@
       </div>
     </section>
 
+    <section class="panel capture-panel">
+      <div class="panel-header">
+        <h2>Capture</h2>
+        <span id="capture-status" class="status-pill status-idle">Idle</span>
+      </div>
+      <div class="capture-body">
+        <select id="capture-interface" aria-label="Network interface"></select>
+        <button id="capture-start" class="btn-primary" type="button">Start capture</button>
+        <button id="capture-stop" class="btn-clear" type="button" disabled>Stop</button>
+        <button id="refresh-toggle" class="btn-clear" type="button">Pause auto-refresh</button>
+      </div>
+      <div id="capture-message" class="capture-message" hidden></div>
+    </section>
+
+    <section class="panel alerts-panel">
+      <div class="panel-header">
+        <h2>Security Alerts</h2>
+        <span class="hint">Rule-based; may include false positives</span>
+      </div>
+      <div class="table-wrapper">
+        <table id="alerts-table">
+          <thead>
+            <tr><th>Time</th><th>Severity</th><th>Type</th><th>Source IP</th><th>Description</th></tr>
+          </thead>
+          <tbody id="alerts-table-body">
+            <tr><td colspan="5" class="empty-row">Loading alerts…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <section class="panel filters-panel">
       <div class="panel-header">
         <h2>Filters</h2>
@@ -81,6 +112,16 @@
       </div>
     </section>
 
+    <section class="panel talkers-panel">
+      <div class="panel-header">
+        <h2>Top Source IPs</h2>
+        <span class="hint">By packet count, reflects current filters</span>
+      </div>
+      <div class="chart-wrapper wide">
+        <canvas id="talkers-chart"></canvas>
+      </div>
+    </section>
+
     <section class="panel">
       <div class="panel-header">
         <h2>Captured Packets</h2>
@@ -112,5 +153,8 @@
   </main>
 
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/talkers.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/capture.js') }}"></script>
 </body>
 </html>
