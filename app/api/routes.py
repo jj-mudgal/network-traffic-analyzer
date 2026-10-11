@@ -122,9 +122,3 @@ def get_stats():
         "traffic_pairs": s["traffic_pairs"],
         "port_activity": s["port_activity"],
     })
-
-
-@api.get("/alerts")
-def get_alerts():
-    """Placeholder until Sprint 4 alert generation lands."""
-    return jsonify({"alerts": [], "count": 0, "message": "No alerts available"})
