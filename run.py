@@ -54,7 +54,7 @@ def main():
                 print(f"Capture failed: {state['error']}")
                 raise SystemExit(1)
         except KeyboardInterrupt:
-            print("\\nStopping packet capture...")
+            print("\nStopping packet capture...")
         finally:
             stop_capture()
         return

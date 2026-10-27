@@ -89,7 +89,8 @@ def test_permission_error_appears_in_status(client, monkeypatch):
 def test_non_ip_packet_is_ignored(monkeypatch):
     inserted = []
     monkeypatch.setattr(capture, "insert_packet", inserted.append)
-    assert capture._process_packet(Ether()) is False
+    capture._process_packet(Ether())
+    assert inserted == []
     assert inserted == []
 
 
@@ -97,6 +98,7 @@ def test_ip_packet_is_stored(monkeypatch):
     inserted = []
     monkeypatch.setattr(capture, "insert_packet", inserted.append)
     packet = IP(src="192.0.2.1", dst="198.51.100.2") / TCP(sport=1234, dport=443)
-    assert capture._process_packet(packet) is True
+    capture._process_packet(packet)
+    assert len(inserted) == 1
     assert len(inserted) == 1
     assert inserted[0]["source_ip"] == "192.0.2.1"
