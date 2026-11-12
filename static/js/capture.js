@@ -39,6 +39,8 @@
     try {
       const { interfaces } = await api("/api/capture/interfaces");
       select.innerHTML = interfaces.map((n) => `<option>${escapeHtml(n)}</option>`).join("");
+      const preferred = ["en0", "eth0"].find((n) => interfaces.includes(n));
+      if (preferred) select.value = preferred;
     } catch (err) {
       select.innerHTML = '<option value="">unavailable</option>';
     }

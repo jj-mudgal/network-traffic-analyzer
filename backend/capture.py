@@ -26,14 +26,13 @@ class CaptureAlreadyRunningError(RuntimeError):
 def _process_packet(packet):
     """Store IPv4 packet metadata and ignore non-IP packets."""
     if packet is None or not packet.haslayer(IP):
-        return False
+        return
     metadata = parse_packet(packet)
     if not metadata or not metadata.get("source_ip"):
-        return False
+        return
     insert_packet(metadata)
     with _state_lock:
         _state["packets_captured"] += 1
-    return True
 
 
 def capture_packets(interface, count=1):
